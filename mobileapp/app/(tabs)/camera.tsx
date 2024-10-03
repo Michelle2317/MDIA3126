@@ -21,25 +21,13 @@ export default function App() {
     );
   }
 
-  const onCameraReady = async () => {
-        console.log('Camera ready!');
-  }
-
-//   const takePhoto = () => {
-//         if (Camera) {
-//                 Camera.takePictureAsync({
-//                         console.log('Photo taken!');
-//                 })
-//         }
-//   }
-
   function toggleCameraFacing() {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
 
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing} onCameraReady={onCameraReady}>
+      <CameraView style={styles.camera} facing={facing}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
             <Text style={styles.text}>Flip Camera</Text>

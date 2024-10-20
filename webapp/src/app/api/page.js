@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Cherry_Swash } from "next/font/google";
+import { createClient } from "@/utils/supabase/clients";
 
 const font = Cherry_Swash({
     weight: "700",
@@ -10,10 +11,25 @@ const font = Cherry_Swash({
 });
 
 export default function Page() {
+    const supabase = createClient();
+    const [session, setSession] = useState();
     const [products, setProducts] = useState(null);
-
     const API_URL =
         "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json";
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session);
+        });
+
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session);
+        });
+
+        return () => subscription.unsubscribe;
+    }, []);
 
     async function fetchProducts() {
         try {
@@ -49,6 +65,14 @@ export default function Page() {
 
         return <div className='text-6xl'>🌭🫛🍖🫘🥫</div>;
     };
+
+    if (session === null) {
+        return <div>Log in...</div>;
+    }
+
+    if (session === undefined) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className='p-4 bg-yellow-300'>
